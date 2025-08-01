@@ -1,136 +1,161 @@
-# 🔊 Rev - Voice Chatbot (Revolt Motors Assistant)
+# 🗣️ Rev - Voice Chatbot for Revolt Motors
 
-A real-time voice chatbot using **React**, **Node.js**, and **Google Gemini 1.5 Flash**, tailored to answer questions only about **Revolt Motors** (electric bikes, service, pricing, availability, etc.). Records audio from your mic, sends it to Gemini, and plays back the AI's voice response.
+Rev is a real-time voice chatbot built using **React** and **Google Gemini 2.5 Flash Native Audio Dialog model**. It answers **only Revolt Motors-related questions** (electric bikes, features, pricing, dealership, etc.) and responds in **both voice and text**.
 
 ---
 
 ## 🚀 Features
 
-- 🎙 Record your voice
-- 🔁 Send voice input to Gemini 1.5 Flash model
-- 🧠 AI trained to respond **only** to Revolt Motors-related queries
-- 🔊 Plays AI's spoken response back to user
-- 📜 Displays text transcript as well
+- 🎤 Record user voice in-browser
+- 📡 Send audio to backend (Node.js/Express)
+- 🧠 Use Gemini Native Audio Dialog model to understand and respond
+- 🔊 Play AI voice response and show transcript
+- 🎨 Clean UI using TailwindCSS
 
 ---
 
-## 📦 Tech Stack
+## 📁 Project Structure
 
-| Layer      | Tech                                |
-|------------|-------------------------------------|
-| Frontend   | React, Tailwind CSS                 |
-| Backend    | Node.js, Express, Multer            |
-| AI Model   | Google Generative AI (Gemini Flash) |
-| Audio      | MediaRecorder API, HTML5 Audio      |
-
----
-
-## 📁 Folder Structure
-
+```
 revolt-voice-chatbot/
-├── client/ # Frontend React app
-│ ├── App.jsx
-│ ├── index.css
-│ └── ...
-├── server/ # Backend Express server
-│ ├── index.js
-│ └── uploads/ # Temporary audio files
-├── .env # Environment variables
-├── package.json
-└── README.md
-
-
----
-
-## 🧰 Prerequisites
-
-- Node.js & npm
-- Google Gemini API Key (from https://aistudio.google.com/)
-- Modern browser (Chrome recommended)
-- Mic access enabled
+├── client/           # React frontend
+│   ├── App.jsx
+│   ├── index.css
+│   ├── ...
+├── server/           # Node.js + Gemini backend
+│   ├── index.js
+│   ├── .env
+│   └── ...
+├── uploads/          # Temp folder for audio files
+├── README.md
+```
 
 ---
 
-## 🔐 Environment Setup
+## 🧩 Tech Stack
 
-Create a `.env` file inside the `server/` folder:
+- **Frontend:** React, TailwindCSS
+- **Backend:** Node.js, Express, Multer
+- **AI Model:** `gemini-2.5-flash-preview-native-audio-dialog` (via `@google/generative-ai`)
+- **API Type:** server-to-server (native audio)
 
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
+---
 
-🛠 Installation
-1️⃣ Backend Setup
-bash
-Copy
-Edit
+## 🔧 Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/revolt-voice-chatbot.git
+cd revolt-voice-chatbot
+```
+
+---
+
+### 2. Install Dependencies
+
+#### Backend
+```bash
 cd server
 npm install
-2️⃣ Frontend Setup
-bash
-Copy
-Edit
+```
+
+#### Frontend
+```bash
 cd ../client
 npm install
-▶️ Running the App Locally
-1. Start Backend (port 3000)
-bash
-Copy
-Edit
-cd server
-npx nodemon index.js
-2. Start Frontend (port 3001)
-bash
-Copy
-Edit
-cd client
-npm run dev
-Now open your browser and visit:
-👉 http://localhost:3001
-
-⚙️ How It Works
-You click "Speak", the browser records your voice.
-
-Audio is sent to backend → forwarded to Gemini model.
-
-Gemini responds with both text and audio.
-
-You see the transcript and hear the AI response.
-
-❗ Model Note
-Be sure to use this model only:
-
-js
-Copy
-Edit
-model: 'gemini-1.5-flash'
-Do not use:
-
-gemini-live-* → Not supported yet
-
-gemini-pro, gemini-1.0 → No native audio support
-
-🧯 Troubleshooting
-Issue	Solution
-❌ Mic not working	Allow mic access in browser settings
-❌ CORS error	Ensure both frontend (3001) and backend (3000) are running
-❌ 404 Model not found	Use only gemini-1.5-flash
-❌ Audio not playing	Check response includes audioOut.audio
-
-🧑‍💻 Author
-Made with ❤️ by [Your Name]
-
-🏍 Disclaimer
-This chatbot is strictly limited to Revolt Motors-related topics. It will ignore queries unrelated to electric bikes, pricing, features, or dealerships.
-
-yaml
-Copy
-Edit
+```
 
 ---
 
-Let me know if you also want:
+### 3. Add `.env` File in `/server`
 
-- A `package.json` template  
-- A deploy-ready `vercel.json` or `render.yaml`  
-- `postman` collection to test your backend  
-- GIF or screenshot section for GitHub preview
+```env
+GEMINI_API_KEY=your_google_generative_ai_api_key
+```
+
+> Get your API key from: https://makersuite.google.com/app/apikey
+
+---
+
+### 4. Run the Servers
+
+#### Backend (Port 3000)
+
+```bash
+cd server
+node index.js
+```
+
+#### Frontend (Port 3001)
+
+```bash
+cd client
+npm start
+```
+
+Then open: [http://localhost:3001](http://localhost:3001)
+
+---
+
+## 📦 Building Tailwind (optional)
+
+If Tailwind doesn’t show styles:
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+Make sure `tailwind.config.js` content is:
+
+```js
+content: ["./src/**/*.{js,jsx,ts,tsx}"],
+```
+
+And `index.css` includes:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+## 🛠️ Backend Notes
+
+- Uses `multer` to receive `.wav` audio file
+- Converts audio to base64 and sends to Gemini via `@google/generative-ai`
+- Cleans up uploaded files after response
+- Sends both `text` and `audioOut.audio` to frontend
+
+---
+
+## 🧪 Example Prompt
+
+**User:** "Tell me about Revolt RV400's range."  
+**AI:** Responds with audio: _"The Revolt RV400 offers a range of up to 150 km on a full charge..."_
+
+---
+
+## ⚠️ Limitations
+
+- Only supports `.wav` audio inputs
+- Designed strictly for Revolt Motors-related queries
+- Gemini API limits apply (check quota)
+
+---
+
+## 🙌 Acknowledgements
+
+- [Google Generative AI](https://ai.google.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [React](https://reactjs.org/)
+- [Revolt Motors](https://www.revoltmotors.com/)
+
+---
+
+## 📜 License
+
+MIT License. Free to use and modify.
